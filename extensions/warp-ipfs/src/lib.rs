@@ -24,9 +24,7 @@ use store::protocols;
 use tokio_util::compat::TokioAsyncReadCompatExt;
 use tracing::{Instrument, Span};
 use uuid::Uuid;
-use warp::raygun::community::{
-    CommunityChannelPermission, CommunityPermission, CommunityRole, RoleId,
-};
+use warp::raygun::community::{CommunityRole, RoleId};
 
 use crate::config::{Bootstrap, DiscoveryType};
 use crate::store::discovery::Discovery;
@@ -1897,42 +1895,67 @@ impl RayGunCommunity for WarpIpfs {
             .edit_community_description(community_id, description)
             .await
     }
-    async fn grant_community_permission(
+    async fn grant_community_permission<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .grant_community_permission(community_id, permission, role_id)
+            .grant_community_permission(community_id, permission.to_string(), role_id)
             .await
     }
-    async fn revoke_community_permission(
+    async fn revoke_community_permission<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .revoke_community_permission(community_id, permission, role_id)
+            .revoke_community_permission(community_id, permission.to_string(), role_id)
             .await
     }
-    async fn grant_community_permission_for_all(
+    async fn grant_community_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .grant_community_permission_for_all(community_id, permission)
+            .grant_community_permission_for_all(community_id, permission.to_string())
             .await
     }
-    async fn revoke_community_permission_for_all(
+    async fn revoke_community_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .revoke_community_permission_for_all(community_id, permission)
+            .revoke_community_permission_for_all(community_id, permission.to_string())
+            .await
+    }
+    async fn has_community_permission<T>(
+        &mut self,
+        community_id: Uuid,
+        permission: T,
+        member: DID,
+    ) -> Result<bool, Error>
+    where
+        T: ToString + Send,
+    {
+        self.messaging_store()?
+            .has_community_permission(community_id, permission.to_string(), member)
             .await
     }
     async fn remove_community_member(
@@ -1965,46 +1988,95 @@ impl RayGunCommunity for WarpIpfs {
             .edit_community_channel_description(community_id, channel_id, description)
             .await
     }
-    async fn grant_community_channel_permission(
+    async fn grant_community_channel_permission<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .grant_community_channel_permission(community_id, channel_id, permission, role_id)
+            .grant_community_channel_permission(
+                community_id,
+                channel_id,
+                permission.to_string(),
+                role_id,
+            )
             .await
     }
-    async fn revoke_community_channel_permission(
+    async fn revoke_community_channel_permission<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .revoke_community_channel_permission(community_id, channel_id, permission, role_id)
+            .revoke_community_channel_permission(
+                community_id,
+                channel_id,
+                permission.to_string(),
+                role_id,
+            )
             .await
     }
-    async fn grant_community_channel_permission_for_all(
+    async fn grant_community_channel_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .grant_community_channel_permission_for_all(community_id, channel_id, permission)
+            .grant_community_channel_permission_for_all(
+                community_id,
+                channel_id,
+                permission.to_string(),
+            )
             .await
     }
-    async fn revoke_community_channel_permission_for_all(
+    async fn revoke_community_channel_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.messaging_store()?
-            .revoke_community_channel_permission_for_all(community_id, channel_id, permission)
+            .revoke_community_channel_permission_for_all(
+                community_id,
+                channel_id,
+                permission.to_string(),
+            )
+            .await
+    }
+    async fn has_community_channel_permission<T>(
+        &mut self,
+        community_id: Uuid,
+        channel_id: Uuid,
+        permission: T,
+        member: DID,
+    ) -> Result<bool, Error>
+    where
+        T: ToString + Send,
+    {
+        self.messaging_store()?
+            .has_community_channel_permission(
+                community_id,
+                channel_id,
+                permission.to_string(),
+                member,
+            )
             .await
     }
 

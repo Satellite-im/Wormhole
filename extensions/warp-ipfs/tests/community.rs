@@ -1772,7 +1772,7 @@ mod test {
         let community = instance_a.get_community(community.id()).await?;
         assert!(community
             .permissions()
-            .get(&CommunityPermission::EditName)
+            .get(&CommunityPermission::EditName.to_string())
             .unwrap()
             .contains(&role.id()));
         Ok(())
@@ -2291,7 +2291,7 @@ mod test {
             .await?;
         assert!(channel
             .permissions()
-            .get(&CommunityChannelPermission::ViewChannel)
+            .get(&CommunityChannelPermission::ViewChannel.to_string())
             .is_none());
         Ok(())
     }
@@ -3462,7 +3462,7 @@ mod test {
             MessageEventKind::RevokedCommunityChannelPermissionForAll {
                 community_id: community.id(),
                 channel_id: channel.id(),
-                permission: CommunityChannelPermission::SendMessages,
+                permissions: vec![CommunityChannelPermission::SendMessages.to_string()],
             },
         )
         .await?;
@@ -3648,7 +3648,7 @@ mod test {
             MessageEventKind::RevokedCommunityChannelPermissionForAll {
                 community_id: community.id(),
                 channel_id: channel.id(),
-                permission: CommunityChannelPermission::SendMessages,
+                permissions: vec![CommunityChannelPermission::SendMessages.to_string()],
             },
         )
         .await?;
@@ -4021,7 +4021,7 @@ mod test {
             Duration::from_secs(60),
             MessageEventKind::RevokedCommunityPermissionForAll {
                 community_id: community.id(),
-                permission: CommunityPermission::PinMessages,
+                permissions: vec![CommunityPermission::PinMessages.to_string()],
             },
         )
         .await?;
@@ -4215,7 +4215,7 @@ mod test {
             MessageEventKind::RevokedCommunityChannelPermissionForAll {
                 community_id: community.id(),
                 channel_id: channel.id(),
-                permission: CommunityChannelPermission::ViewChannel,
+                permissions: vec![CommunityChannelPermission::ViewChannel.to_string()],
             },
         )
         .await?;
@@ -4378,7 +4378,7 @@ mod test {
             MessageEventKind::RevokedCommunityChannelPermissionForAll {
                 community_id: community.id(),
                 channel_id: channel.id(),
-                permission: CommunityChannelPermission::SendAttachments,
+                permissions: vec![CommunityChannelPermission::SendAttachments.to_string()],
             },
         )
         .await?;
@@ -4545,7 +4545,7 @@ mod test {
             MessageEventKind::RevokedCommunityChannelPermissionForAll {
                 community_id: community.id(),
                 channel_id: channel.id(),
-                permission: CommunityChannelPermission::ViewChannel,
+                permissions: vec![CommunityChannelPermission::ViewChannel.to_string()],
             },
         )
         .await?;
@@ -4767,7 +4767,7 @@ mod test {
             MessageEventKind::RevokedCommunityChannelPermissionForAll {
                 community_id: community.id(),
                 channel_id: channel.id(),
-                permission: CommunityChannelPermission::ViewChannel,
+                permissions: vec![CommunityChannelPermission::ViewChannel.to_string()],
             },
         )
         .await?;

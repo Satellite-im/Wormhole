@@ -22,9 +22,8 @@ use warp::{
     error::Error,
     raygun::{
         community::{
-            Community, CommunityChannel, CommunityChannelPermission, CommunityChannelPermissions,
-            CommunityChannelType, CommunityInvite, CommunityPermission, CommunityPermissions,
-            CommunityRole, RoleId,
+            Community, CommunityChannel, CommunityChannelPermissions, CommunityChannelType,
+            CommunityInvite, CommunityPermission, CommunityPermissions, CommunityRole, RoleId,
         },
         Message, MessageOptions, MessagePage, MessageReference, Messages, MessagesType,
     },
@@ -190,33 +189,9 @@ impl CommunityDocument {
         let creator = keypair.to_did()?;
 
         let mut permissions = CommunityPermissions::new();
-        permissions.insert(CommunityPermission::EditName, IndexSet::new());
-        permissions.insert(CommunityPermission::EditDescription, IndexSet::new());
-        permissions.insert(CommunityPermission::EditIcon, IndexSet::new());
-        permissions.insert(CommunityPermission::EditBanner, IndexSet::new());
-
-        permissions.insert(CommunityPermission::CreateRoles, IndexSet::new());
-        permissions.insert(CommunityPermission::EditRoles, IndexSet::new());
-        permissions.insert(CommunityPermission::DeleteRoles, IndexSet::new());
-
-        permissions.insert(CommunityPermission::GrantRoles, IndexSet::new());
-        permissions.insert(CommunityPermission::RevokeRoles, IndexSet::new());
-
-        permissions.insert(CommunityPermission::GrantPermissions, IndexSet::new());
-        permissions.insert(CommunityPermission::RevokePermissions, IndexSet::new());
-
-        permissions.insert(CommunityPermission::CreateChannels, IndexSet::new());
-        permissions.insert(CommunityPermission::EditChannels, IndexSet::new());
-        permissions.insert(CommunityPermission::DeleteChannels, IndexSet::new());
-
-        //We don't add CreateInvites permission since by default we leave it unrestricted.
-        permissions.insert(CommunityPermission::EditInvites, IndexSet::new());
-        permissions.insert(CommunityPermission::DeleteInvites, IndexSet::new());
-
-        permissions.insert(CommunityPermission::RemoveMembers, IndexSet::new());
-
-        permissions.insert(CommunityPermission::DeleteMessages, IndexSet::new());
-        permissions.insert(CommunityPermission::PinMessages, IndexSet::new());
+        for permission in CommunityPermission::default_disabled() {
+            permissions.insert(permission.to_string(), IndexSet::new());
+        }
 
         let mut members = IndexSet::new();
         members.insert(creator.clone());
@@ -299,14 +274,17 @@ impl CommunityDocument {
         }
         false
     }
-    pub fn has_permission(&self, user: &DID, has_permission: &CommunityPermission) -> bool {
+    pub fn has_permission<T>(&self, user: &DID, has_permission: &T) -> bool
+    where
+        T: ToString,
+    {
         if &self.owner == user {
             return true;
         }
         if !self.members.contains(user) {
             return false;
         }
-        let Some(authorized_roles) = self.permissions.get(has_permission) else {
+        let Some(authorized_roles) = self.permissions.get(&has_permission.to_string()) else {
             return true;
         };
         for authorized_role in authorized_roles {
@@ -318,13 +296,15 @@ impl CommunityDocument {
         }
         false
     }
-
-    pub fn has_channel_permission(
+    pub fn has_channel_permission<T>(
         &self,
         user: &DID,
-        has_permission: &CommunityChannelPermission,
+        has_permission: &T,
         channel_id: Uuid,
-    ) -> bool {
+    ) -> bool
+    where
+        T: ToString,
+    {
         if &self.owner == user {
             return true;
         }
@@ -334,7 +314,7 @@ impl CommunityDocument {
         let Some(channel) = self.channels.get(&channel_id.to_string()) else {
             return false;
         };
-        let Some(authorized_roles) = channel.permissions.get(has_permission) else {
+        let Some(authorized_roles) = channel.permissions.get(&has_permission.to_string()) else {
             return true;
         };
         for authorized_role in authorized_roles {

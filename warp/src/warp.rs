@@ -15,9 +15,7 @@ use crate::multipass::{
     Friends, GetIdentity, IdentityImportOption, IdentityInformation, ImportLocation, LocalIdentity,
     MultiPass, MultiPassEvent, MultiPassEventStream, MultiPassImportExport,
 };
-use crate::raygun::community::{
-    CommunityChannelPermission, CommunityPermission, CommunityRole, RoleId,
-};
+use crate::raygun::community::{CommunityRole, RoleId};
 use crate::raygun::{
     community::{
         Community, CommunityChannel, CommunityChannelType, CommunityInvite, RayGunCommunity,
@@ -759,42 +757,67 @@ where
             .edit_community_description(community_id, description)
             .await
     }
-    async fn grant_community_permission(
+    async fn grant_community_permission<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .grant_community_permission(community_id, permission, role_id)
             .await
     }
-    async fn revoke_community_permission(
+    async fn revoke_community_permission<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .revoke_community_permission(community_id, permission, role_id)
             .await
     }
-    async fn grant_community_permission_for_all(
+    async fn grant_community_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .grant_community_permission_for_all(community_id, permission)
             .await
     }
-    async fn revoke_community_permission_for_all(
+    async fn revoke_community_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
-        permission: CommunityPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .revoke_community_permission_for_all(community_id, permission)
+            .await
+    }
+    async fn has_community_permission<T>(
+        &mut self,
+        community_id: Uuid,
+        permission: T,
+        member: DID,
+    ) -> Result<bool, Error>
+    where
+        T: ToString + Send,
+    {
+        self.raygun
+            .has_community_permission(community_id, permission, member)
             .await
     }
     async fn remove_community_member(
@@ -827,46 +850,72 @@ where
             .edit_community_channel_description(community_id, channel_id, description)
             .await
     }
-    async fn grant_community_channel_permission(
+    async fn grant_community_channel_permission<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .grant_community_channel_permission(community_id, channel_id, permission, role_id)
             .await
     }
-    async fn revoke_community_channel_permission(
+    async fn revoke_community_channel_permission<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permission: T,
         role_id: RoleId,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .revoke_community_channel_permission(community_id, channel_id, permission, role_id)
             .await
     }
-    async fn grant_community_channel_permission_for_all(
+    async fn grant_community_channel_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .grant_community_channel_permission_for_all(community_id, channel_id, permission)
             .await
     }
-    async fn revoke_community_channel_permission_for_all(
+    async fn revoke_community_channel_permission_for_all<T>(
         &mut self,
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
-    ) -> Result<(), Error> {
+        permission: T,
+    ) -> Result<(), Error>
+    where
+        T: ToString + Send,
+    {
         self.raygun
             .revoke_community_channel_permission_for_all(community_id, channel_id, permission)
+            .await
+    }
+    async fn has_community_channel_permission<T>(
+        &mut self,
+        community_id: Uuid,
+        channel_id: Uuid,
+        permission: T,
+        member: DID,
+    ) -> Result<bool, Error>
+    where
+        T: ToString + Send,
+    {
+        self.raygun
+            .has_community_channel_permission(community_id, channel_id, permission, member)
             .await
     }
 

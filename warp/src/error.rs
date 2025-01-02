@@ -274,6 +274,8 @@ pub enum Error {
     //Misc
     #[error("Unauthorized")]
     Unauthorized,
+    #[error("Invalid permission")]
+    InvalidPermission,
     #[error("Length for '{context}' is invalid. Current length: {current}. Minimum Length: {minimum:?}, Maximum: {maximum:?}")]
     InvalidLength {
         context: String,

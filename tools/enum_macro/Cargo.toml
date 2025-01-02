@@ -1,0 +1,12 @@
+[package]
+name = "enum_macro"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+syn = { version = "2.0.87", features = ["derive"] }
+quote = "1.0.37"
+proc-macro2 = "1.0.89"
+
+[lib]
+proc-macro = true

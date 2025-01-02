@@ -8,10 +8,7 @@ use crate::error::Error;
 use crate::raygun::community::RayGunCommunity;
 use crate::{Extension, SingleHandle};
 
-use community::{
-    CommunityChannel, CommunityChannelPermission, CommunityInvite, CommunityPermission,
-    CommunityRole, RoleId,
-};
+use community::{CommunityChannel, CommunityInvite, CommunityRole, RoleId};
 use derive_more::Display;
 use futures::stream::BoxStream;
 
@@ -198,21 +195,21 @@ pub enum MessageEventKind {
     },
     GrantedCommunityPermission {
         community_id: Uuid,
-        permission: CommunityPermission,
+        permissions: Vec<String>,
         role_id: RoleId,
     },
     RevokedCommunityPermission {
         community_id: Uuid,
-        permission: CommunityPermission,
+        permissions: Vec<String>,
         role_id: RoleId,
     },
     GrantedCommunityPermissionForAll {
         community_id: Uuid,
-        permission: CommunityPermission,
+        permissions: Vec<String>,
     },
     RevokedCommunityPermissionForAll {
         community_id: Uuid,
-        permission: CommunityPermission,
+        permissions: Vec<String>,
     },
     RemovedCommunityMember {
         community_id: Uuid,
@@ -231,24 +228,24 @@ pub enum MessageEventKind {
     GrantedCommunityChannelPermission {
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permissions: Vec<String>,
         role_id: RoleId,
     },
     RevokedCommunityChannelPermission {
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permissions: Vec<String>,
         role_id: RoleId,
     },
     GrantedCommunityChannelPermissionForAll {
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permissions: Vec<String>,
     },
     RevokedCommunityChannelPermissionForAll {
         community_id: Uuid,
         channel_id: Uuid,
-        permission: CommunityChannelPermission,
+        permissions: Vec<String>,
     },
     CommunityMessageSent {
         community_id: Uuid,
