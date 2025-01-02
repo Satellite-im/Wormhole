@@ -94,6 +94,7 @@ tracing = { version = "0.1" }
 either = "1"
 void = "1"
 indexmap = { version = "2.4.0", features = ["serde"] }
+macro_utils = { path = "./tools/macro-utils" }
 
 # ipfs dependency
 rust-ipfs = "0.14.0"

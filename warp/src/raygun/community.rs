@@ -4,6 +4,7 @@ use bytes::Bytes;
 use chrono::{DateTime, Utc};
 use futures::stream::BoxStream;
 use indexmap::{IndexMap, IndexSet};
+use macro_utils::impl_funcs;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -277,6 +278,7 @@ pub enum CommunityChannelPermission {
     SendAttachments,
 }
 
+#[impl_funcs(name = "raygun_community_impls")]
 #[async_trait::async_trait]
 pub trait RayGunCommunity: Sync + Send {
     async fn get_community_stream(

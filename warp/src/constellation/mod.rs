@@ -14,6 +14,7 @@ use chrono::{DateTime, Utc};
 use directory::Directory;
 use futures::stream::BoxStream;
 use futures::Stream;
+use macro_utils::impl_funcs;
 
 #[derive(Debug, Clone)]
 pub enum ConstellationEventKind {
@@ -82,6 +83,7 @@ pub type ConstellationProgressStream = BoxStream<'static, Progression>;
 
 /// Interface that would provide functionality around the filesystem.
 #[async_trait::async_trait]
+#[impl_funcs(name = "constellation_impls")]
 pub trait Constellation: ConstellationEvent + Extension + Sync + Send + SingleHandle {
     /// Provides the timestamp of when the file system was modified
     fn modified(&self) -> DateTime<Utc>;
@@ -218,6 +220,7 @@ pub trait Constellation: ConstellationEvent + Extension + Sync + Send + SingleHa
 }
 
 #[async_trait::async_trait]
+#[impl_funcs(name = "constellation_event_impls")]
 pub trait ConstellationEvent: Sync + Send {
     /// Subscribe to an stream of events
     async fn constellation_subscribe(&mut self) -> Result<ConstellationEventStream, Error> {
